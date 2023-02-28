@@ -1,5 +1,11 @@
+import * as dat from "lil-gui";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+
+/**
+ * Debug
+ */
+const gui = new dat.GUI();
 
 /**
  * Base
@@ -13,25 +19,28 @@ const scene = new THREE.Scene();
 /**
  * Textures
  */
-const textureLoader = new THREE.TextureLoader();
+const cubeTextureLoader = new THREE.CubeTextureLoader();
 
-const doorColorTexture = textureLoader.load("/textures/door/color.jpg");
-const doorAlphaTexture = textureLoader.load("/textures/door/alpha.jpg");
-const doorAmbientOcclusionTexture = textureLoader.load(
-	"/textures/door/ambientOcclusion.jpg"
-);
-const doorHeightTexture = textureLoader.load("/textures/door/height.jpg");
-const doorNormalTexture = textureLoader.load("/textures/door/normal.jpg");
-const doorMetalnessTexture = textureLoader.load("/textures/door/metalness.jpg");
-const doorRoughnessTexture = textureLoader.load("/textures/door/roughness.jpg");
-const matcapTexture = textureLoader.load("/textures/matcaps/1.png");
-const gradientTexture = textureLoader.load("/textures/gradients/3.jpg");
-
-const material = new THREE.MeshMatcapMaterial({ matcap: matcapTexture });
+const environmentMapTexture = cubeTextureLoader.load([
+	"/textures/environmentMaps/0/px.jpg",
+	"/textures/environmentMaps/0/nx.jpg",
+	"/textures/environmentMaps/0/py.jpg",
+	"/textures/environmentMaps/0/ny.jpg",
+	"/textures/environmentMaps/0/pz.jpg",
+	"/textures/environmentMaps/0/nz.jpg",
+]);
 
 /**
  * Objects
  */
+const material = new THREE.MeshStandardMaterial();
+material.metalness = 0.7;
+material.roughness = 0.2;
+material.envMap = environmentMapTexture;
+
+gui.add(material, "metalness").min(0).max(1).step(0.0001);
+gui.add(material, "roughness").min(0).max(1).step(0.0001);
+
 const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), material);
 sphere.position.x = -1.5;
 
@@ -43,7 +52,33 @@ const torus = new THREE.Mesh(
 );
 torus.position.x = 1.5;
 
+sphere.geometry.setAttribute(
+	"uv2",
+	new THREE.BufferAttribute(sphere.geometry.attributes.uv.array, 2)
+);
+plane.geometry.setAttribute(
+	"uv2",
+	new THREE.BufferAttribute(plane.geometry.attributes.uv.array, 2)
+);
+torus.geometry.setAttribute(
+	"uv2",
+	new THREE.BufferAttribute(torus.geometry.attributes.uv.array, 2)
+);
+
 scene.add(sphere, plane, torus);
+
+/**
+ * Lights
+ */
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+scene.add(ambientLight);
+
+const pointLight = new THREE.PointLight(0xffffff, 0.5);
+pointLight.position.x = 2;
+pointLight.position.y = 3;
+pointLight.position.z = 4;
+
+scene.add(pointLight);
 
 /**
  * Sizes
