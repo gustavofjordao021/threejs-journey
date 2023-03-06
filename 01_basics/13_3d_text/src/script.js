@@ -35,7 +35,7 @@ fontLoader.load("/fonts/helvetiker_regular.typeface.json", (font) => {
  * Object
  */
 fontLoader.load("/fonts/helvetiker_regular.typeface.json", (font) => {
-	const textGeometry = new TextGeometry("Hello Three.js", {
+	const textGeometry = new TextGeometry("gjordao.eth", {
 		font: font,
 		size: 0.5,
 		height: 0.2,
@@ -55,11 +55,11 @@ fontLoader.load("/fonts/helvetiker_regular.typeface.json", (font) => {
 	scene.add(text);
 
 	const donutGeometry = new THREE.TorusGeometry(0.3, 0.2, 20, 45);
-	for (let i = 0; i < 100; i++) {
+	for (let i = 0; i < 300; i++) {
 		const donut = new THREE.Mesh(donutGeometry, material);
-		donut.position.x = (Math.random() - 0.5) * 10;
-		donut.position.y = (Math.random() - 0.5) * 10;
-		donut.position.z = (Math.random() - 0.5) * 10;
+		donut.position.x = (Math.random() - 0.5) * 30;
+		donut.position.y = (Math.random() - 0.5) * 30;
+		donut.position.z = (Math.random() - 0.5) * 30;
 		donut.rotation.x = Math.random() * Math.PI;
 		donut.rotation.y = Math.random() * Math.PI;
 		const scale = Math.random();
@@ -130,6 +130,25 @@ const tick = () => {
 
 	// Update controls
 	controls.update();
+
+	// Update donut positions and create new ones when necessary
+	scene.children.forEach((child) => {
+		if (
+			child instanceof THREE.Mesh &&
+			child.geometry instanceof THREE.TorusGeometry
+		) {
+			child.position.y -= 0.05;
+			if (child.position.y < -10) {
+				child.position.y = 10;
+				child.position.x = (Math.random() - 0.5) * 30;
+				child.position.z = (Math.random() - 0.5) * 30;
+				child.rotation.x = Math.random() * Math.PI;
+				child.rotation.y = Math.random() * Math.PI;
+				const scale = Math.random();
+				child.scale.set(scale, scale, scale);
+			}
+		}
+	});
 
 	// Render
 	renderer.render(scene, camera);
