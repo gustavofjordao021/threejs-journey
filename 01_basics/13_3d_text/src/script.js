@@ -1,6 +1,5 @@
 import * as dat from "lil-gui";
 import * as THREE from "three";
-import typefaceFont from "../static/fonts/helvetiker_regular.typeface.json";
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
@@ -46,7 +45,7 @@ fontLoader.load("/fonts/helvetiker_regular.typeface.json", (font) => {
 		bevelOffset: 0,
 		bevelSegments: 5,
 	});
-	const matcapTexture = textureLoader.load("/textures/matcaps/1.png");
+	const matcapTexture = textureLoader.load("/textures/matcaps/8.png");
 	const material = new THREE.MeshMatcapMaterial({
 		matcap: matcapTexture,
 	});
@@ -131,7 +130,7 @@ const tick = () => {
 	// Update controls
 	controls.update();
 
-	// Update donut positions and create new ones when necessary
+	// Update donut positions and create new ones when necessary for
 	scene.children.forEach((child) => {
 		if (
 			child instanceof THREE.Mesh &&
